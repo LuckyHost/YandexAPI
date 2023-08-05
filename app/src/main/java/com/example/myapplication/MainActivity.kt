@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
 
             Log.d("MyLog", "onCreate: ${load}.")
             val isLoad = remember { mutableStateOf(false)}
-
+    //
             if (load !=null){
                 isLoad.value=true
             }
