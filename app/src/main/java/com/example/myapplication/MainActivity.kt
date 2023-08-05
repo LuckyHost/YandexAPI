@@ -41,6 +41,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 import javax.inject.Inject
 import androidx.compose.runtime.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -53,7 +54,7 @@ class MainActivity : ComponentActivity() {
     override  fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        fun load():Flow<YandexDiskUserInfo> = flow{1
+        fun load():Flow<YandexDiskUserInfo> = flow{
             val authToken = "y0_AgAAAAAC82upAADLWwAAAADlltdLOtUDPw_5RoqBUKqEbmjZZScvdtg"
                 val respons=apiServiccce.getUserInfo(
                     authToken,
@@ -70,13 +71,23 @@ class MainActivity : ComponentActivity() {
 
 
         setContent {
-            val load =load().collectAsState(Result)
-            val load2=load.value as? YandexDiskUserInfo
 
-            Log.d("MyLog", "onCreate: ${load}.")
+            val test = remember { mutableStateOf<YandexDiskUserInfo?>(null) }
+
+            LaunchedEffect(true){
+
+            load().collect{
+                test.value=it
+            }
+            }
+/*
+            val load =load().collectAsState(Result)
+            val load2=load.value as? YandexDiskUserInfo*/
+
+            Log.d("MyLog", "onCreate: ${test}.")
             val isLoad = remember { mutableStateOf(false)}
     //
-            if (load !=null){
+            if (test !=null){
                 isLoad.value=true
             }
 
@@ -88,7 +99,7 @@ class MainActivity : ComponentActivity() {
                    }
 
                composable("Home"){
-                GreetingPreview(load2!!)
+                GreetingPreview(test.value!!)
                 }
 
                }
