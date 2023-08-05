@@ -16,7 +16,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 
 
@@ -27,7 +26,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -39,74 +37,62 @@ import com.example.myapplication.ui.theme.UI.screens.Splash
 
 import com.example.myapplication.ui.theme.YandexDiskUserInfo
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 
 
-import kotlinx.coroutines.flow.MutableStateFlow
-
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import androidx.compose.runtime.*
-import androidx.compose.ui.tooling.preview.Preview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var apiServiccce: ApiService
-     var myRespons= MutableStateFlow<YandexDiskUserInfo?>(null)
+//     var myRespons= MutableStateFlow<YandexDiskUserInfo?>(null)
 
     override  fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val isload = MutableStateFlow(false)
-        lifecycleScope.launch {
 
+        fun load():Flow<YandexDiskUserInfo> = flow{1
             val authToken = "y0_AgAAAAAC82upAADLWwAAAADlltdLOtUDPw_5RoqBUKqEbmjZZScvdtg"
-            val scopeLoad= CoroutineScope(Dispatchers.IO).launch {
-            val respons=apiServiccce.getUserInfo(
-                authToken,
-                "resources?path=%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%2F%D0%A0%D0%B0%D1%86%20%D0%A1%D0%BC%D0%B5%D1%82%D0%B0%2FUserName&fields=60&sort=-created"
-            )
-            if (respons.isSuccessful){
-                myRespons.value= respons.body()!!
-                withContext(Dispatchers.Main){
+                val respons=apiServiccce.getUserInfo(
+                    authToken,
+                    "resources?path=%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0%2F%D0%A0%D0%B0%D1%86%20%D0%A1%D0%BC%D0%B5%D1%82%D0%B0%2FUserName&fields=60&sort=-created"
+                )
+                if (respons.isSuccessful){
+                emit(respons.body()!!)
                 }
+            else {
+                    throw (Exception("Ошибка, код ошибки ${respons.code()}"))
             }
         }
-            scopeLoad.join()
-            if(scopeLoad.isCompleted) {
 
-                isload.value=true
-            }
-            myRespons.collect{
 
-                Log.d("MyLog", "onCreate: $it")
-            }
-        }
 
         setContent {
+            val load =load().collectAsState(Result)
+            val load2=load.value as? YandexDiskUserInfo
+
+            Log.d("MyLog", "onCreate: ${load}.")
+            val isLoad = remember { mutableStateOf(false)}
+
+            if (load !=null){
+                isLoad.value=true
+            }
+
+
             val navController = rememberNavController()
            NavHost(navController = navController, startDestination = "Splash"){
                composable("Splash"){
-                    Splash(navController = navController,isload)
+                    Splash(navController = navController,isLoad)
                    }
 
                composable("Home"){
-                   val myData = remember{ mutableStateOf<YandexDiskUserInfo?>(null)}
-
-
-                   LaunchedEffect(Unit){
-                       myRespons.collect{it->
-                      if (it != null) {
-                          myData.value=it
-                      }
-                  }
-                   }
-                   myData.value?.let { it1 -> GreetingPreview(it1) }
+                GreetingPreview(load2!!)
+                }
 
                }
-           }
+
 
            }
         }
