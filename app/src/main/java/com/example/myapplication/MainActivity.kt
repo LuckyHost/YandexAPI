@@ -41,6 +41,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 import javax.inject.Inject
 import androidx.compose.runtime.*
+import com.example.myapplication.ui.theme.UI.screens.Home
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -99,7 +100,7 @@ class MainActivity : ComponentActivity() {
                    }
 
                composable("Home"){
-                GreetingPreview(test.value!!)
+                   Home(yandexDiskUserInfo = test.value!!)
                 }
 
                }
@@ -113,58 +114,6 @@ class MainActivity : ComponentActivity() {
 
 
 
-@Composable
-fun GreetingPreview(respons: YandexDiskUserInfo)
-{
-
-    var mytext by remember { mutableStateOf("Привет")    }
-    mytext=respons._embedded.items[1].name
-
-
-    Column() {
-        LazyColumn(modifier = Modifier
-            .fillMaxWidth(1f)
-            .fillMaxHeight(0.5f)
-            .padding(10.dp),
-
-
-        )
-        {
-            items(respons._embedded.items){it->
-                Text(text = it.name,
-                    fontSize = 15.sp)
-            }
-
-        }
-
-            Text(text = mytext)
-
-
-
-        SubcomposeAsyncImage(
-            model = "https://wallscloud.net/img/resize/3200/2400/MM/2023-07-26-seealpsee-switzerland-1-59808.jpeg",
-            loading = {
-                CircularProgressIndicator()
-            },
-            contentDescription = null
-        )
-
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data("https://sun59-1.userapi.com/impg/vybz3822oXofA2SyKZOPNcqWKLx-aQj3vHl2jA/0H6HMJ1TF0M.jpg?size=1865x2160&quality=95&sign=09fc4e24e9c53497aa8aba5552ef4b8c&type=album")
-                .crossfade(true)
-                .build(),
-            placeholder = painterResource(androidx.core.R.drawable.ic_call_answer_low),
-            error = painterResource(R.drawable.cat32),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.clip(CircleShape)
-        )
-
-    }
-
-
-    }
 
 
 
