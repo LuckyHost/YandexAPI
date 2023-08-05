@@ -2,6 +2,7 @@ package com.example.myapplication.ui.theme.UI.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Center
 import androidx.compose.foundation.layout.Box
@@ -24,12 +25,34 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
+import com.example.myapplication.ui.theme.API.ApiService
+import com.example.myapplication.ui.theme.API.Constante
+import com.example.myapplication.ui.theme.API.Constante.authToken
+import com.example.myapplication.ui.theme.API.Constante.url_delete
 import com.example.myapplication.ui.theme.Item
 import com.example.myapplication.ui.theme.YandexDiskUserInfo
+import com.example.myapplication.ui.theme.di.Modul
+import dagger.Component
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
 
 //@Preview(showBackground = true)
 @Composable
-fun Item(item:Item) {
+
+fun Item(item:Item,apiService: ApiService) {
+    val onImageClick: (item:Item) -> Unit = {
+        CoroutineScope(Dispatchers.IO).launch {
+
+            apiService.deleteFile(authToken, url_delete+it.path)
+        }
+
+    }
+
+
     Card (modifier = Modifier
         .fillMaxWidth()
         .padding(6.dp),
@@ -63,11 +86,18 @@ fun Item(item:Item) {
 
             ) {
 
-            Image(painter = painterResource(id = R.drawable.baseline_delete_forever_24)
-                , contentDescription = "Name")
+            Image(
+                painter = painterResource(id = R.drawable.baseline_delete_forever_24),
+                contentDescription = "Name",
+                Modifier.clickable { onImageClick(item) }
+            )
+
         }
             }
 
     }
+
+
+
 
 }

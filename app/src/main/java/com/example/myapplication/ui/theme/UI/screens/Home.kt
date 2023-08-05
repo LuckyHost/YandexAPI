@@ -1,34 +1,43 @@
 package com.example.myapplication.ui.theme.UI.screens
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.core.R
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import com.example.myapplication.ui.theme.API.ApiService
 import com.example.myapplication.ui.theme.YandexDiskUserInfo
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
-fun Home(yandexDiskUserInfo: YandexDiskUserInfo) {
+fun Home(yandexDiskUserInfo: YandexDiskUserInfo, apiServiccce:ApiService) {
+
+
+    Column {
+
+
+ /*   Button(onClick =
+    { isUpdate.value = !isUpdate.value
+        Log.d("MyLog",isUpdate.value.toString())
+    }) {
+        Text(text = "Click ${isUpdate.value}")
+
+    }*/
     LazyColumn(modifier = Modifier.fillMaxWidth()
     )
     {
         items(yandexDiskUserInfo._embedded.items){
-        Item(it)
+        Item(it,apiServiccce)
         }
 
 
     }
-
+    }
 /*    SubcomposeAsyncImage(
         model = "https://wallscloud.net/img/resize/3200/2400/MM/2023-07-26-seealpsee-switzerland-1-59808.jpeg",
         loading = {
