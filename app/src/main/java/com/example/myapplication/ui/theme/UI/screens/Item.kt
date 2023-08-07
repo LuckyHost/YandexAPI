@@ -3,6 +3,8 @@ package com.example.myapplication.ui.theme.UI.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.Center
 import androidx.compose.foundation.layout.Box
@@ -20,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,7 +58,15 @@ fun Item(item:Item,apiService: ApiService) {
 
     Card (modifier = Modifier
         .fillMaxWidth()
-        .padding(6.dp),
+        .padding(6.dp)
+        .pointerInput(Unit) {
+            detectHorizontalDragGestures { change, dragAmount ->
+                android.util.Log.d("MyLog","Item.kt. Item: detectHorizontalDragGestures  $dragAmount")
+            }
+            detectVerticalDragGestures { change, dragAmount ->
+                android.util.Log.d("MyLog","Item.kt. Item: detectVerticalDragGestures $dragAmount")
+            }
+        },
         elevation= CardDefaults.cardElevation(
             defaultElevation = 15.dp
         )
@@ -67,15 +78,10 @@ fun Item(item:Item,apiService: ApiService) {
             /*.background(Color.Blue)*/,
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.Start
-
-
-
         )
         {
             Text(text = item.name.dropLast(4),
                 fontSize = 20.sp,
-//                modifier = Modifier.background(Color.Gray)
-
                 )
 
             Row(

@@ -15,6 +15,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object Modul {
 
+
     @Singleton
     @Provides
     fun provideReteofit(okHttpClient: OkHttpClient):Retrofit{
