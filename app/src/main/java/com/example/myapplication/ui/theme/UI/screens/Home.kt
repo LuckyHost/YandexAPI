@@ -1,6 +1,5 @@
 package com.example.myapplication.ui.theme.UI.screens
 
-import android.util.Log
 import androidx.compose.animation.core.InfiniteRepeatableSpec
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -9,104 +8,79 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 import com.example.myapplication.R
 import com.example.myapplication.ui.theme.API.ApiService
 import com.example.myapplication.ui.theme.YandexDiskUserInfo
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Home(yandexDiskUserInfo: State<YandexDiskUserInfo?>, apiServiccce:ApiService, isLoaderFile:MutableStateFlow<Boolean>,isLoadFile:MutableStateFlow<Boolean>) {
-    var offSet = remember {mutableStateOf(-60f)}
-    var isRotashion by remember {mutableStateOf(false)}
+fun Home(
+    yandexDiskUserInfo: State<YandexDiskUserInfo?>, apiServiccce:ApiService,loadingFile:MutableStateFlow<Boolean>) {
 
 
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .background(Color.Red)
-        .pointerInput(Unit){detectVerticalDragGestures {
-                change, dragAmount ->
-            android.util.Log.d("MyLog","Home.kt. Home: dragAmount $dragAmount")
-            isLoadFile.value = true
-        }}
-    )
-    {
-        Sync(offSet,isRotashion)
+    val refreshScope = rememberCoroutineScope()
 
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .pointerInput(Unit) {
-                detectVerticalDragGestures { _, dragAmount ->
-                    offSet.value = dragAmount
-    //                Log.d("MyLog", "Home: detectVerticalDragGestures dragAmount ${offSet.value.dp}")
-                    Log.d("MyLog", "Home: pointer $isRotashion")
-                    if (dragAmount > 50) {
-                        isRotashion = true
-                        isLoadFile.value = true
-                        android.util.Log.d("MyLog", "Home.kt. Home: ${isLoaderFile.value}")
-                    }
-                }
-            }) {
-
-
-
-
-
-            }
-
-           LazyColumn(modifier = Modifier
-               .background(Color.Blue)
-               .fillMaxSize(0.5f)
-               .pointerInput(Unit) {
-                   detectVerticalDragGestures { change, dragAmount ->
-                       android.util.Log.d("MyLog", "Home.kt. Home: dragAmount $dragAmount")
-                   }
-               }
-
-            )
-            {
-                yandexDiskUserInfo.value?._embedded?.let {
-                    items(it.items) {
-                        Item(it,apiServiccce)
-                    }
-                }
-            }
-
+    fun refresh() = refreshScope.launch {
+        loadingFile.value=true
     }
 
+    val state = rememberPullRefreshState(loadingFile.collectAsState().value, ::refresh)
+
+
+Box(
+    modifier = Modifier
+        .pullRefresh(state),
+)
+        {
+                       LazyColumn(modifier = Modifier
+                       .fillMaxSize()
+
+                    )
+                    {
+                        yandexDiskUserInfo.value?._embedded?.let {
+                            items(it.items){
+                                Item(item = it, apiService = apiServiccce,loadingFile)
+                            }
+                        }
+                        }
+                PullRefreshIndicator(loadingFile.collectAsState().value, state,Modifier.align(Alignment.TopCenter))
+
+            }
+}
 
 
 
 
-    
 /*    SubcomposeAsyncImage(
         model = "https://wallscloud.net/img/resize/3200/2400/MM/2023-07-26-seealpsee-switzerland-1-59808.jpeg",
         loading = {
@@ -127,7 +101,7 @@ fun Home(yandexDiskUserInfo: State<YandexDiskUserInfo?>, apiServiccce:ApiService
         modifier = Modifier.clip(CircleShape)
     )*/
 
-}
+
 
 @Composable
 fun Sync(offSet: MutableState<Float>,isRotation: Boolean){

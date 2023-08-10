@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 
 
@@ -24,9 +23,9 @@ import com.example.myapplication.ui.theme.API.Constante.authToken
 import com.example.myapplication.ui.theme.API.Constante.url_info
 import com.example.myapplication.ui.theme.UI.screens.Home
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -38,46 +37,40 @@ class MainActivity : ComponentActivity() {
     override  fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val isLoaderFile:MutableStateFlow<Boolean> = MutableStateFlow(false)
-        val isLoadFile:MutableStateFlow<Boolean> = MutableStateFlow(true)
-        val YandexFile:MutableStateFlow<YandexDiskUserInfo? > = MutableStateFlow(null)
-        val loadFile:MutableStateFlow<Deferred<YandexDiskUserInfo>?> = MutableStateFlow(null)
+        val isLoadFile:MutableStateFlow<Boolean> = MutableStateFlow(false)
+        val loadingFile:MutableStateFlow<Boolean> = MutableStateFlow(true)
+        val loadFile:MutableStateFlow<YandexDiskUserInfo? > = MutableStateFlow(null)
 
            lifecycleScope.launch {
-               isLoadFile.collect{
-                   android.util.Log.d("MyLog","MainActivity.kt. onCreate: $it")
-
-                    if (it){
+               loadingFile.collect{
+                   if (it){
                      loadFile.value= CoroutineScope(Dispatchers.IO).async{
                         val respons=apiServiccce.getUserInfo(authToken,url_info)
                         if (respons.isSuccessful){
-                            isLoaderFile.value=true
-                            isLoadFile.value=false
+                            isLoadFile.value=true
+                            delay(1500)
+                            loadingFile.value=false
                              return@async respons.body()!!
                         }
                         else {
                             throw (Exception("Ошибка, код ошибки ${respons.code()}"))
                         }
-                    }
+                    }.await()
                     }
                   }
            }
                 setContent {
-                    val yaFile=YandexFile.collectAsState()
-                    val navController = rememberNavController()
 
-//                    LaunchedEffect(isLoadFile.collectAsState().value){
-//                            YandexFile.value = loadFile.value?.await()
-//                    }
+                    val yaFile =loadFile.collectAsState()
+                    val navController = rememberNavController()
 
                    NavHost(navController = navController, startDestination = "Splash"){
                        composable("Splash"){
-                            Splash(navController = navController,isLoaderFile)
-                           Log.d("Mylog", "onCreate: ЧТо то изменилось в Splash")
+                            Splash(navController = navController,isLoadFile)
                            }
 
                        composable("Home"){
-                           Home(yaFile,apiServiccce,isLoaderFile,isLoadFile)
+                           Home(yaFile,apiServiccce,loadingFile)
                            Log.d("Mylog", "onCreate: ЧТо то изменилось в Home")
                         }
                        }
