@@ -47,19 +47,19 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val isLoadFile:MutableStateFlow<Boolean> = MutableStateFlow(false)
-        val loadingFile:MutableStateFlow<Boolean> = MutableStateFlow(true)
-        val loadFile:MutableStateFlow<YandexDiskUserInfo? > = MutableStateFlow(null)
+        val startLoadingFile:MutableStateFlow<Boolean> = MutableStateFlow(true)
+        val loadFileYA:MutableStateFlow<YandexDiskUserInfo? > = MutableStateFlow(null)
 
 
            lifecycleScope.launch {
-               loadingFile.collect{
+               startLoadingFile.collect{
                    if (it){
                         dao.insertAll(PersonInfo(name = "Dima", API = "Makarov"))
-                     loadFile.value= CoroutineScope(Dispatchers.IO).async{
+                     loadFileYA.value= CoroutineScope(Dispatchers.IO).async{
                         val respons=apiServiccce.getUserInfo(authToken,url_info)
                         if (respons.isSuccessful){
                             isLoadFile.value=true
-                            loadingFile.value=false
+                            startLoadingFile.value=false
                              return@async respons.body()!!
                         }
                         else {
@@ -71,7 +71,7 @@ class MainActivity : ComponentActivity() {
            }
                 setContent {
 
-                    val yaFile =loadFile.collectAsState()
+                    val yaFile =loadFileYA.collectAsState()
                     val navController = rememberNavController()
                     Scaffold(
                         bottomBar = {
@@ -86,7 +86,7 @@ class MainActivity : ComponentActivity() {
                             }
 
                             composable("Home"){
-                                Home(yaFile,apiServiccce,loadingFile)
+                                Home(yaFile,apiServiccce,startLoadingFile)
                                 Log.d("Mylog", "onCreate: ЧТо то изменилось в Home")
                             }
                         }
