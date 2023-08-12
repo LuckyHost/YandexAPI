@@ -20,7 +20,7 @@ import com.example.myapplication.R
 import com.example.myapplication.ui.theme.API.ApiService
 import com.example.myapplication.ui.theme.API.Constante.authToken
 import com.example.myapplication.ui.theme.API.Constante.url_delete
-import com.example.myapplication.ui.theme.Item
+import com.example.myapplication.ui.theme.Data.Item
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 @Composable
 
 fun Item(item: Item, apiService: ApiService, loadingFile: MutableStateFlow<Boolean>) {
-    val onImageClick: (item:Item) -> Unit = {
+    val onImageClick: (item: Item) -> Unit = {
 
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -61,7 +61,7 @@ fun Item(item: Item, apiService: ApiService, loadingFile: MutableStateFlow<Boole
         )
         {
             Text(text = item.name.dropLast(4),
-                fontSize = 20.sp,
+                fontSize = 20.sp
                 )
 
             Row(

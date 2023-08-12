@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.theme
+package com.example.myapplication.ui.theme.Data
 
 data class Item(
     val antivirus_status: String,

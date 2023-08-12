@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.theme
+package com.example.myapplication.ui.theme.Data
 
 data class Embedded(
     val items: List<Item>,

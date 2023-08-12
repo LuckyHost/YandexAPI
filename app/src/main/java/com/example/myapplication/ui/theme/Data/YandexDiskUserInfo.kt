@@ -1,4 +1,5 @@
-package com.example.myapplication.ui.theme
+package com.example.myapplication.ui.theme.Data
+
 
 data class YandexDiskUserInfo(
     val _embedded: Embedded,

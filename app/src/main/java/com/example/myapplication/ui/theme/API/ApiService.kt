@@ -1,6 +1,6 @@
 package com.example.myapplication.ui.theme.API
 
-import com.example.myapplication.ui.theme.YandexDiskUserInfo
+import com.example.myapplication.ui.theme.Data.YandexDiskUserInfo
 import retrofit2.Response
 import retrofit2.http.DELETE
 import retrofit2.http.GET

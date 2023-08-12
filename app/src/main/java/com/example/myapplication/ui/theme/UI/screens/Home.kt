@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,8 +24,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,8 +33,7 @@ import androidx.compose.ui.unit.dp
 
 import com.example.myapplication.R
 import com.example.myapplication.ui.theme.API.ApiService
-import com.example.myapplication.ui.theme.YandexDiskUserInfo
-import kotlinx.coroutines.delay
+import com.example.myapplication.ui.theme.Data.YandexDiskUserInfo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
@@ -45,8 +41,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Home(
-    yandexDiskUserInfo: State<YandexDiskUserInfo?>, apiServiccce:ApiService,loadingFile:MutableStateFlow<Boolean>) {
-
+    yandexDiskUserInfo: State<YandexDiskUserInfo?>, apiServiccce:ApiService, loadingFile:MutableStateFlow<Boolean>) {
 
     val refreshScope = rememberCoroutineScope()
 
@@ -54,14 +49,14 @@ fun Home(
         loadingFile.value=true
     }
 
-    val state = rememberPullRefreshState(loadingFile.collectAsState().value, ::refresh)
-
+    val state = rememberPullRefreshState(loadingFile.collectAsState().value, onRefresh = {refresh()})
 
 Box(
     modifier = Modifier
         .pullRefresh(state),
 )
         {
+
                        LazyColumn(modifier = Modifier
                        .fillMaxSize()
 
@@ -71,12 +66,17 @@ Box(
                             items(it.items){
                                 Item(item = it, apiService = apiServiccce,loadingFile)
                             }
+
                         }
-                        }
+                    }
+
+
+
                 PullRefreshIndicator(loadingFile.collectAsState().value, state,Modifier.align(Alignment.TopCenter))
 
             }
-}
+    }
+
 
 
 
