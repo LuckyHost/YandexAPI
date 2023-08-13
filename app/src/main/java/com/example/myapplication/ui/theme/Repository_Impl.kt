@@ -1,9 +1,7 @@
 package com.example.myapplication.ui.theme
 
-import android.util.*
 import com.example.myapplication.ui.theme.API.*
 import com.example.myapplication.ui.theme.Data.*
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import retrofit2.*
 import javax.inject.*
@@ -34,19 +32,8 @@ class Repository_Impl @Inject constructor(private val apiService: ApiService) : 
         stateFlow: MutableStateFlow<Boolean>,
         startfun: Response<YandexDiskUserInfo>,
     ) {
-
-
         if (startfun.isSuccessful) {
             stateFlow.value = false
-            Log.d(
-                "MyLog",
-                "Repository_Impl.kt. refreshLoadingFile:  Закончил раньше "
-            )
-        } else {
-            delay(1500); stateFlow.value = false; Log.d(
-                "MyLog",
-                "Repository_Impl.kt. refreshLoadingFile: Закончил позже"
-            )
         }
 
 

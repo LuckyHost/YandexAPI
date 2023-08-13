@@ -24,11 +24,12 @@ class MyViewModel @Inject constructor(
     val fileYA: StateFlow<YandexDiskUserInfo?> = _fileYA.asStateFlow()
 
 
+
     fun refreshLoadingFile() {
         viewModelScope.launch {
             _loadingFile.value=true
-          val startfun=startLoadingFile()
-            repository.refreshLoadingFile(_loadingFile, startfun.await())
+          val startFun=startLoadingFile()
+            repository.refreshLoadingFile(_loadingFile, startFun.await())
         }
     }
 
@@ -40,7 +41,6 @@ class MyViewModel @Inject constructor(
         }
 
     }
-
 
     fun deleteItem(item: Item) {
         viewModelScope.launch {
