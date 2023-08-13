@@ -7,9 +7,9 @@ import retrofit2.Response
 
 interface Repository {
 
-    suspend fun startLoadingFile(): YandexDiskUserInfo
+    suspend fun startLoadingFile(): Response<YandexDiskUserInfo>
 
     suspend fun deleteData(item: Item): Response<YandexDiskUserInfo>
 
-    suspend fun refreshLoadingFile(stateFlow: MutableStateFlow<Boolean>,startfun:Unit)
+    suspend fun refreshLoadingFile(stateFlow: MutableStateFlow<Boolean>,startfun:Response<YandexDiskUserInfo>)
 }

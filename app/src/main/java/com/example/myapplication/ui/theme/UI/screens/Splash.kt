@@ -54,6 +54,7 @@ import kotlinx.coroutines.flow.collect
         LaunchedEffect(true) {
             myViewModel.isLoadFile.collect {
                 if (it) {
+                    android.util.Log.d("MyLog","Splash.kt. Splash: $it")
                     delay(1000)
                     navController.popBackStack()
                     navController.navigate("Home")

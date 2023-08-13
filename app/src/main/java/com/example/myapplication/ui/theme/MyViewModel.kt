@@ -2,19 +2,19 @@ package com.example.myapplication.ui.theme
 
 import android.util.*
 import androidx.lifecycle.*
-import com.example.myapplication.ui.theme.API.*
 import com.example.myapplication.ui.theme.Data.*
 import dagger.hilt.android.lifecycle.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import retrofit2.*
 import javax.inject.*
 
 @HiltViewModel
 class MyViewModel @Inject constructor(
-    private val repository: Repository,
+    private val repository: Repository_Impl,
 ) : ViewModel() {
 
-    private val _isLoadFile: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val _isLoadFile: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isLoadFile: StateFlow<Boolean> = _isLoadFile.asStateFlow()
 
     private val _loadingFile: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -24,16 +24,24 @@ class MyViewModel @Inject constructor(
     val fileYA: StateFlow<YandexDiskUserInfo?> = _fileYA.asStateFlow()
 
 
-     fun refreshLoadingFile() {
-        viewModelScope.launch{
-            repository.refreshLoadingFile(_loadingFile, startLoadingFile())
-        }
-    }
-    fun startLoadingFile() {
+    fun refreshLoadingFile() {
         viewModelScope.launch {
-            _fileYA.value = repository.startLoadingFile()
+            _loadingFile.value=true
+          val startfun=startLoadingFile()
+            repository.refreshLoadingFile(_loadingFile, startfun.await())
         }
     }
+
+    fun startLoadingFile(): Deferred<Response<YandexDiskUserInfo>> {
+        return viewModelScope.async {
+            _fileYA.value = repository.startLoadingFile().body()
+            _isLoadFile.value = true
+            return@async repository.startLoadingFile()
+        }
+
+    }
+
+
     fun deleteItem(item: Item) {
         viewModelScope.launch {
             if (repository.deleteData(item).isSuccessful) startLoadingFile() else
