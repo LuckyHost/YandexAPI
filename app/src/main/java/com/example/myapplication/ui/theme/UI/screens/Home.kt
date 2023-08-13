@@ -34,14 +34,16 @@ import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
 import com.example.myapplication.ui.theme.API.ApiService
 import com.example.myapplication.ui.theme.Data.YandexDiskUserInfo
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
-
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
+
 fun Home(
-    yandexDiskUserInfo: State<YandexDiskUserInfo?>, apiServiccce:ApiService, loadingFile:MutableStateFlow<Boolean>) {
+    yandexDiskUserInfo: State<YandexDiskUserInfo?>, apiServiccce:ApiService, loadingFile:MutableStateFlow<Boolean>
+) {
 
     val refreshScope = rememberCoroutineScope()
 
@@ -75,6 +77,7 @@ Box(
                 PullRefreshIndicator(loadingFile.collectAsState().value, state,Modifier.align(Alignment.TopCenter))
 
             }
+
     }
 
 
@@ -102,42 +105,3 @@ Box(
     )*/
 
 
-
-@Composable
-fun Sync(offSet: MutableState<Float>,isRotation: Boolean){
-
-    val  rotation by  rememberInfiniteTransition().animateFloat(
-        initialValue =0f,
-        targetValue =360f ,
-        animationSpec = InfiniteRepeatableSpec(tween(2000),RepeatMode.Reverse), label = ""
-    )
-    val myOffSet by animateFloatAsState(
-        targetValue = offSet.value,
-        animationSpec = spring(),
-        label = ""
-    )
-
-    Box(contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .offset(y = myOffSet.dp)
-    ) {
-
-
-        Image(
-            painter = painterResource(id = R.drawable.baseline_change_circle_24),
-            contentDescription ="",
-            modifier = Modifier
-                .size(60.dp)
-                .rotate(
-                    if (isRotation) {
-                        rotation
-                    } else {
-                        0f
-                    }
-                )
-
-        )
-
-    }
-}

@@ -42,6 +42,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var dao: DaoBD
 
+
     @OptIn(ExperimentalMaterial3Api::class)
     override  fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +51,7 @@ class MainActivity : ComponentActivity() {
         val startLoadingFile:MutableStateFlow<Boolean> = MutableStateFlow(true)
         val loadFileYA:MutableStateFlow<YandexDiskUserInfo? > = MutableStateFlow(null)
 
-
+        
            lifecycleScope.launch {
                startLoadingFile.collect{
                    if (it){
@@ -65,7 +66,7 @@ class MainActivity : ComponentActivity() {
                         else {
                             throw (Exception("Ошибка, код ошибки ${respons.code()}"))
                         }
-                    }.await()
+                     }.await()
                     }
                   }
            }
@@ -95,6 +96,18 @@ class MainActivity : ComponentActivity() {
                    }
 
     }
+
+    override fun onStop() {
+        super.onStop()
+        android.util.Log.d("MyLog","MainActivity.kt. onStop: Stop")
+      CoroutineScope(Dispatchers.IO).launch {
+            db.clearAllTables()
+//        dao.deleteTable()
+      }
+    }
+
+
+
 }
 
 
