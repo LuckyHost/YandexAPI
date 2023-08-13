@@ -1,30 +1,25 @@
 package com.example.myapplication.ui.theme.UI.screens
 
+import android.annotation.*
+import android.util.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.myapplication.ui.theme.Data.Item
-import com.example.myapplication.ui.theme.Data.YandexDiskUserInfo
 import com.example.myapplication.ui.theme.MyViewModel
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Home(myViewModel: MyViewModel) {
@@ -33,22 +28,18 @@ fun Home(myViewModel: MyViewModel) {
     val rememberYaFile=myViewModel.fileYA.collectAsState().value?._embedded?.items
     val myItems: List<Item>? by  rememberUpdatedState(rememberYaFile)
 
-
         Box(
             modifier = Modifier
                 .pullRefresh(state),
         )
         {
-            
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
             )
             {
-                android.util.Log.d("MyLog","Home.kt. Home: TEST1")
-//                val myItems: List<Item>? = myViewModel.fileYA.value?._embedded?.items
                 items(myItems!!) {
-                    Item(item = it, myViewModel = myViewModel)
+                    Item(it, myViewModel)
                 }
             }
 

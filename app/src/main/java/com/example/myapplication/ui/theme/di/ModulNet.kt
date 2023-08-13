@@ -1,14 +1,9 @@
 package com.example.myapplication.ui.theme.di
 
-import android.content.Context
-import androidx.room.Room
 import com.example.myapplication.ui.theme.API.ApiService
-import com.example.myapplication.ui.theme.db.Data.MyDataBase
-import com.example.myapplication.ui.theme.db.DAO.DaoBD
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

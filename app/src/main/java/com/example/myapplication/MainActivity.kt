@@ -1,12 +1,12 @@
 package com.example.myapplication
 
 
-import android.os.Bundle
+import android.os.*
+import android.util.*
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.ui.input.key.Key.Companion.Home
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -34,8 +34,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val viewModel: MyViewModel by viewModels()
-
-
+        viewModel.startLoadingFile()
 
 
         setContent {
@@ -56,7 +55,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onStop() {
         super.onStop()
-        android.util.Log.d("MyLog", "MainActivity.kt. onStop: Stop")
+        Log.d("MyLog", "MainActivity.kt. onStop: Stop")
         CoroutineScope(Dispatchers.IO).launch {
             db.clearAllTables()
 //        dao.deleteTable()

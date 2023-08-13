@@ -1,21 +1,19 @@
 package com.example.myapplication.ui.theme
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.myapplication.ui.theme.API.ApiService
-import com.example.myapplication.ui.theme.API.Constante
-import com.example.myapplication.ui.theme.Data.Item
-import com.example.myapplication.ui.theme.Data.YandexDiskUserInfo
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+import android.util.*
+import androidx.lifecycle.*
+import com.example.myapplication.ui.theme.API.*
+import com.example.myapplication.ui.theme.Data.*
+import dagger.hilt.android.lifecycle.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import javax.inject.*
 
 @HiltViewModel
-class MyViewModel @Inject constructor(private val apiService: ApiService) : ViewModel() {
+class MyViewModel @Inject constructor(
+    private val apiService: ApiService,
+    private val repository: Repository,
+) : ViewModel() {
 
     private val _isLoadFile: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val isLoadFile: StateFlow<Boolean> = _isLoadFile.asStateFlow()
@@ -26,52 +24,26 @@ class MyViewModel @Inject constructor(private val apiService: ApiService) : View
     private val _fileYA: MutableStateFlow<YandexDiskUserInfo?> = MutableStateFlow(null)
     val fileYA: StateFlow<YandexDiskUserInfo?> = _fileYA.asStateFlow()
 
-    private val _test: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val test: StateFlow<Boolean> = _test.asStateFlow()
 
-
-    init {
-        startLoadingFile()
-        android.util.Log.d("MyLog", "MyViewModel.kt.  INIT: ")
-    }
-
-
-    fun refreshLoadingFile() {
-        viewModelScope.launch {
-            _loadingFile.value = true
-            startLoadingFile()
-            delay(1500)
-            _loadingFile.value = false
+     fun refreshLoadingFile() {
+        viewModelScope.launch{
+            repository.refreshLoadingFile(_loadingFile, startLoadingFile())
         }
-        android.util.Log.d("MyLog", "MyViewModel.kt. refreshLoadingFile:  refresh")
     }
-
-
     fun startLoadingFile() {
-        if (isLoadFile.value) {
-            viewModelScope.launch {
-                val result = apiService.getUserInfo(
-                    Constante.authToken, Constante.url_info
-                )
-
-                if (result.isSuccessful) {
-                    _fileYA.value = result.body()
-                } else {
-                    throw (Exception("Ошибка, код ошибки ${result.code()}"))
-                }
-            }
-
-
+        viewModelScope.launch {
+            _fileYA.value = repository.startLoadingFile()
         }
     }
-
-
     fun deleteItem(item: Item) {
         viewModelScope.launch {
-                val body= apiService.deleteFile(Constante.authToken, Constante.url_delete + item.path)
-            if (body.isSuccessful) { startLoadingFile()}
-
+            if (repository.deleteData(item).isSuccessful) startLoadingFile() else
+                Log.d(
+                    "MyLog",
+                    "MyViewModel.kt. deleteItem: ${repository.deleteData(item).code()}"
+                )
         }
 
     }
 }
+
