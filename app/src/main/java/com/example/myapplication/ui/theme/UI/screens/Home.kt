@@ -30,7 +30,8 @@ import com.example.myapplication.ui.theme.MyViewModel
 fun Home(myViewModel: MyViewModel) {
 
     val state = rememberPullRefreshState( myViewModel.loadingFile.collectAsState().value, onRefresh = { myViewModel.refreshLoadingFile() })
-    val myItems: List<Item>? by  rememberUpdatedState(myViewModel.fileYA.collectAsState().value?._embedded?.items)
+    val rememberYaFile=myViewModel.fileYA.collectAsState().value?._embedded?.items
+    val myItems: List<Item>? by  rememberUpdatedState(rememberYaFile)
 
 
         Box(
