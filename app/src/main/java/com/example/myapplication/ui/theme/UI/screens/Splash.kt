@@ -18,6 +18,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.myapplication.ui.theme.MyViewModel
 import com.example.myapplication.ui.theme.Pink40
 import com.example.myapplication.ui.theme.PurpleGrey40
 import kotlinx.coroutines.delay
@@ -26,13 +27,12 @@ import kotlinx.coroutines.flow.collect
 
 //@Preview (showBackground = true)
 @Composable
- fun Splash(navController: NavController, mutableState: MutableStateFlow<Boolean>) {
+ fun Splash(navController: NavController,myViewModel: MyViewModel) {
 
     Column(
         modifier = Modifier
             .fillMaxSize(1f)
-            .background(Pink40)
-         ,
+            .background(Pink40),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
 
@@ -45,23 +45,22 @@ import kotlinx.coroutines.flow.collect
             fontSize = 25.sp
         )
         LinearProgressIndicator(
-          modifier = Modifier
-              .width(200.dp)
-              .height(4.dp),
+            modifier = Modifier
+                .width(200.dp)
+                .height(4.dp),
             color = PurpleGrey40,
         )
 
-        LaunchedEffect(true){
-                    mutableState.collect{
-                        if (it){
-                       delay(1000)
-                        navController.popBackStack()
-                        navController.navigate("Home")
-                    }}
-
+        LaunchedEffect(true) {
+            myViewModel.isLoadFile.collect {
+                if (it) {
+                    delay(1000)
+                    navController.popBackStack()
+                    navController.navigate("Home")
+                }
+            }
 
         }
 
     }
-
 }

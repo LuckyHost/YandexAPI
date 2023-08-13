@@ -1,87 +1,66 @@
 package com.example.myapplication.ui.theme.UI.screens
 
-import androidx.compose.animation.core.InfiniteRepeatableSpec
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-
-import com.example.myapplication.R
-import com.example.myapplication.ui.theme.API.ApiService
+import com.example.myapplication.ui.theme.Data.Item
 import com.example.myapplication.ui.theme.Data.YandexDiskUserInfo
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
+import com.example.myapplication.ui.theme.MyViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
+fun Home(myViewModel: MyViewModel) {
 
-fun Home(
-    yandexDiskUserInfo: State<YandexDiskUserInfo?>, apiServiccce:ApiService, loadingFile:MutableStateFlow<Boolean>
-) {
+    val state = rememberPullRefreshState( myViewModel.loadingFile.collectAsState().value, onRefresh = { myViewModel.refreshLoadingFile() })
+    val myItems: List<Item>? by  rememberUpdatedState(myViewModel.fileYA.collectAsState().value?._embedded?.items)
 
-    val refreshScope = rememberCoroutineScope()
 
-    fun refresh() = refreshScope.launch {
-        loadingFile.value=true
-    }
-
-    val state = rememberPullRefreshState(loadingFile.collectAsState().value, onRefresh = {refresh()})
-
-Box(
-    modifier = Modifier
-        .pullRefresh(state),
-)
+        Box(
+            modifier = Modifier
+                .pullRefresh(state),
+        )
         {
-
-                       LazyColumn(modifier = Modifier
-                       .fillMaxSize()
-
-                    )
-                    {
-                        yandexDiskUserInfo.value?._embedded?.let {
-                            items(it.items){
-                                Item(item = it, apiService = apiServiccce,loadingFile)
-                            }
-
-                        }
-                    }
-
-
-
-                PullRefreshIndicator(loadingFile.collectAsState().value, state,Modifier.align(Alignment.TopCenter))
-
+            
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+            {
+                android.util.Log.d("MyLog","Home.kt. Home: TEST1")
+//                val myItems: List<Item>? = myViewModel.fileYA.value?._embedded?.items
+                items(myItems!!) {
+                    Item(item = it, myViewModel = myViewModel)
+                }
             }
 
-    }
+            PullRefreshIndicator(
+                myViewModel.loadingFile.collectAsState().value,
+                state,
+                Modifier.align(Alignment.TopCenter)
+            )
+
+        }
 
 
-
+}
 
 
 /*    SubcomposeAsyncImage(

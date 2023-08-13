@@ -50,19 +50,6 @@ object ModulNet {
     }
 
 
-    @Singleton
-    @Provides
-    fun provideDB(@ApplicationContext context: Context):MyDataBase{
-        return  Room.databaseBuilder(
-                context.applicationContext,
-                MyDataBase::class.java,
-                "DB.db").build()
-        }
-
-    @Singleton
-    @Provides
-    fun provideDAO(db:MyDataBase): DaoBD = db.getDao()
-
 
 
 
