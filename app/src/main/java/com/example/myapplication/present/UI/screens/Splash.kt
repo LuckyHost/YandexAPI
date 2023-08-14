@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myapplication.present.MyViewModel
-import com.example.myapplication.present.Pink40
-import com.example.myapplication.present.PurpleGrey40
+import com.example.myapplication.present.theme.Pink40
+import com.example.myapplication.present.theme.PurpleGrey40
 import kotlinx.coroutines.delay
 
 //@Preview (showBackground = true)

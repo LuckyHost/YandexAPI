@@ -3,6 +3,7 @@ package com.example.myapplication.present
 import android.util.*
 import androidx.lifecycle.*
 import com.example.myapplication.data.*
+import com.example.myapplication.domain.*
 import com.example.myapplication.domain.retrofit.DataClass.*
 import dagger.hilt.android.lifecycle.*
 import kotlinx.coroutines.*
@@ -12,7 +13,7 @@ import javax.inject.*
 
 @HiltViewModel
 class MyViewModel @Inject constructor(
-    private val repository: Repository_Impl,
+    private val repository: Repository,
 ) : ViewModel() {
 
     private val _isLoadFile: MutableStateFlow<Boolean> = MutableStateFlow(false)
