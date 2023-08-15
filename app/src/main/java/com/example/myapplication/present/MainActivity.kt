@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             NavHost(navController = navController, startDestination = "Login") {
                 composable("Login") {
-                    Login(/*viewModel*/)
+                    Login(navController,viewModel)
                 }
                 composable("Splash") {
                     Splash(navController, viewModel)

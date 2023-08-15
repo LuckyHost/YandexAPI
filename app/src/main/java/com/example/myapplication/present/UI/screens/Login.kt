@@ -3,31 +3,37 @@ package com.example.myapplication.present.UI.screens
 import android.util.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.*
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.platform.*
-import androidx.compose.ui.text.input.*
-import androidx.compose.ui.tooling.preview.*
+import androidx.compose.ui.res.*
 import androidx.compose.ui.unit.*
+import androidx.navigation.*
+import com.example.myapplication.R
+import com.example.myapplication.present.*
 import com.example.myapplication.present.theme.*
+import kotlinx.coroutines.*
 import timber.log.*
 
-@OptIn(ExperimentalComposeUiApi::class)
-@Preview(showBackground = true)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun Login(/*viewModel: MyViewModel*/) {
+fun Login(navController: NavHostController, viewModel: MyViewModel) {
 
     var tokenText by remember { mutableStateOf("") }
     var pathText by remember { mutableStateOf("") }
-    var tokenIconDelete by remember { mutableStateOf(false) }
-    var pathIconDelete by remember { mutableStateOf(false) }
+    var isLoadFile by remember { mutableStateOf(false) }
+
+
+    LaunchedEffect(isLoadFile){
+
+      if (isLoadFile) {navController.navigate("Home"); Log.d("MyLog","Циклит") }
+    }
+
+
+
 
     Box(
         modifier = Modifier
@@ -38,6 +44,7 @@ fun Login(/*viewModel: MyViewModel*/) {
     )
 
     {
+
         Box(
             Modifier
 //                .background(Color.Red)
@@ -52,11 +59,24 @@ fun Login(/*viewModel: MyViewModel*/) {
                 verticalArrangement = Arrangement.Center
             )
             {
+
+                Text(
+                    text = "Статистика.YA",
+                    fontSize = 25.sp
+                )
+
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(85.dp)
+                )
+
+
                 TextField(
                     modifier = Modifier
                         .fillMaxWidth(),
                     value = tokenText,
-                    onValueChange = {tokenText = it},
+                    onValueChange = { tokenText = it },
                     label = { Text("API Token") },
                     singleLine = true,
                     placeholder = { Text("by Makarov.D") },
@@ -89,14 +109,62 @@ fun Login(/*viewModel: MyViewModel*/) {
                     },
                     enabled = !tokenText.isEmpty()
                 )
-            }
 
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp)
+                )
+
+
+                ElevatedAssistChip(
+                    onClick = { viewModel.startLoadingFile(){isLoadFile=it} },
+                    label = { Text("Войти") },
+                    leadingIcon = {
+
+                            if (isLoadFile) {
+                                Icon( Icons.Filled.Done,
+                                    contentDescription = "Localized description",
+                                    Modifier.size(AssistChipDefaults.IconSize))
+                            }
+                            else{
+                                Icon( Icons.Filled.KeyboardArrowRight,
+                                    contentDescription = "Localized description",
+                                    Modifier.size(AssistChipDefaults.IconSize))
+                            }
+
+
+
+                    }
+                )
+
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(15.dp)
+                )
+
+                ElevatedAssistChip(
+                    onClick = { /* Do something! */ },
+                    label = { Text("Инструкция по получению Token") },
+                    leadingIcon = {
+                        Icon(
+                           painterResource(id = R.drawable.smile) ,
+                            contentDescription = "Localized description",
+                            Modifier.size(AssistChipDefaults.IconSize)
+                        )
+                    }
+                )
+
+            }
 
         }
     }
 
 
 }
+
+
 
 @Composable
 fun hideClearIcon(boolean: Boolean, isClearing: () -> Unit): Unit {
@@ -106,7 +174,6 @@ fun hideClearIcon(boolean: Boolean, isClearing: () -> Unit): Unit {
         {
             Icon(Icons.Default.Clear, contentDescription = null)
         }
-
     } else {
 
     }

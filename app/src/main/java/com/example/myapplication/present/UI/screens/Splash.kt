@@ -26,7 +26,7 @@ import timber.log.*
 @Composable
  fun Splash(navController: NavController,myViewModel: MyViewModel) {
 
-    myViewModel.startLoadingFile()
+    myViewModel.startLoadingFile(){}
 
     Column(
         modifier = Modifier

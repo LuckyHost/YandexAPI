@@ -1,5 +1,6 @@
 package com.example.myapplication.data
 
+import android.util.*
 import com.example.myapplication.data.NetWork.*
 import com.example.myapplication.data.room.*
 import com.example.myapplication.domain.*
@@ -16,10 +17,12 @@ class Repository_Impl @Inject constructor(
     private val daoBD: DaoBD,
 ) : Repository {
 
-    override suspend fun startLoadingFile(): Response<YandexDiskUserInfo> {
+    override suspend fun startLoadingFile(isSuccessful: (Boolean) -> Unit): Response<YandexDiskUserInfo> {
         val result = apiService.getUserInfo(
             Constante.authToken, Constante.url_info
         )
+        Log.d("MyLog","Функция start")
+        isSuccessful(result.isSuccessful)
         if (result.isSuccessful) {
             return result
         } else {

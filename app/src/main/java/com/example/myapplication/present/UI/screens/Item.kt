@@ -19,9 +19,8 @@ fun Item(item: Item, myViewModel: MyViewModel,) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 10.dp, start = 6.dp, end = 6.dp)
-            ,
-        elevation = CardDefaults.cardElevation(
+            .padding(top = 10.dp, start = 6.dp, end = 6.dp),
+            elevation = CardDefaults.cardElevation(
             defaultElevation = 15.dp
         )
     )
@@ -50,7 +49,7 @@ fun Item(item: Item, myViewModel: MyViewModel,) {
                 IconButton(
                     onClick = {
                         myViewModel.deleteItem(item)
-                        myViewModel.startLoadingFile()
+                        myViewModel.startLoadingFile(){}
                     }
                 )
                 {

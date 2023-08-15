@@ -27,26 +27,28 @@ class MyViewModel @Inject constructor(
     val fileYA: StateFlow<YandexDiskUserInfo?> = _fileYA.asStateFlow()
 
 
+
+
     fun refreshLoadingFile() {
         viewModelScope.launch {
             _loadingFile.value=true
-          val startFun=startLoadingFile()
+          val startFun=startLoadingFile(){}
             repository.refreshLoadingFile(_loadingFile, startFun.await())
         }
     }
 
-    fun startLoadingFile(): Deferred<Response<YandexDiskUserInfo>> {
+    fun startLoadingFile(isSuccessful:(Boolean)->Unit): Deferred<Response<YandexDiskUserInfo>> {
         return viewModelScope.async {
-            _fileYA.value = repository.startLoadingFile().body()
+            _fileYA.value = repository.startLoadingFile{}.body()
             _isLoadFile.value = true
-            return@async repository.startLoadingFile()
+            return@async repository.startLoadingFile{isSuccessful(it)}
         }
 
     }
 
     fun deleteItem(item: Item) {
         viewModelScope.launch {
-            if (repository.deleteData(item).isSuccessful) startLoadingFile() else
+            if (repository.deleteData(item).isSuccessful)  startLoadingFile(){}else
                 Log.d(
                     "MyLog",
                     "MyViewModel.kt. deleteItem: ${repository.deleteData(item).code()}"
