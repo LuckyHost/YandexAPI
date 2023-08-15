@@ -20,10 +20,13 @@ import com.example.myapplication.present.MyViewModel
 import com.example.myapplication.present.theme.Pink40
 import com.example.myapplication.present.theme.PurpleGrey40
 import kotlinx.coroutines.delay
+import timber.log.*
 
 //@Preview (showBackground = true)
 @Composable
  fun Splash(navController: NavController,myViewModel: MyViewModel) {
+
+    myViewModel.startLoadingFile()
 
     Column(
         modifier = Modifier

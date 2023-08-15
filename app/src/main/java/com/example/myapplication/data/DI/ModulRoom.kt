@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.room.Room
 import com.example.myapplication.data.room.DaoBD
 import com.example.myapplication.domain.room.db.MyDataBase
+import com.example.myapplication.domain.room.entity.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.*
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -29,5 +31,11 @@ object ModulRoom {
     @Provides
     fun provideDao(myDataBase: MyDataBase): DaoBD {
         return myDataBase.getDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideFlowListPerson(flow:Flow<List<PersonInfo>>):Flow<List<PersonInfo>>{
+        return flow
     }
 }

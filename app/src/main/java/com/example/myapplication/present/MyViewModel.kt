@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import com.example.myapplication.data.*
 import com.example.myapplication.domain.*
 import com.example.myapplication.domain.retrofit.DataClass.*
+import com.example.myapplication.domain.room.entity.*
 import dagger.hilt.android.lifecycle.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -24,7 +25,6 @@ class MyViewModel @Inject constructor(
 
     private val _fileYA: MutableStateFlow<YandexDiskUserInfo?> = MutableStateFlow(null)
     val fileYA: StateFlow<YandexDiskUserInfo?> = _fileYA.asStateFlow()
-
 
 
     fun refreshLoadingFile() {

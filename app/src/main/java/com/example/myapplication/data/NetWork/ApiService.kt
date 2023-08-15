@@ -1,7 +1,6 @@
 package com.example.myapplication.data.NetWork
 
 import com.example.myapplication.domain.retrofit.DataClass.YandexDiskUserInfo
-import com.skydoves.sandwich.*
 import retrofit2.Response
 import retrofit2.http.DELETE
 import retrofit2.http.GET
