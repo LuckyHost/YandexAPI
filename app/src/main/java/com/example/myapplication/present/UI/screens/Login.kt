@@ -93,7 +93,7 @@ fun Login(navController: NavHostController, viewModel: MyViewModel) {
                     onValueChange = { tokenText = it },
                     label = { Text("API Token") },
                     singleLine = true,
-                    placeholder = { Text("by Makarov.D") },
+//                    placeholder = { Text("by Makarov.D") },
                     leadingIcon = {
                         Icon(Icons.Outlined.Lock, contentDescription = null)
                     },
