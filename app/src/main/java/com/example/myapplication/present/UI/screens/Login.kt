@@ -1,6 +1,7 @@
 package com.example.myapplication.present.UI.screens
 
 import android.util.*
+import android.widget.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.*
@@ -9,13 +10,17 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.*
 import androidx.compose.ui.unit.*
 import androidx.navigation.*
 import com.example.myapplication.R
+import com.example.myapplication.domain.retrofit.DataClass.*
 import com.example.myapplication.present.*
 import com.example.myapplication.present.theme.*
 import kotlinx.coroutines.*
+import retrofit2.*
 import timber.log.*
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -24,15 +29,24 @@ fun Login(navController: NavHostController, viewModel: MyViewModel) {
 
     var tokenText by remember { mutableStateOf("") }
     var pathText by remember { mutableStateOf("") }
+    var isErrorToken by remember { mutableStateOf(false) }
+    var isErrorPath by remember { mutableStateOf(false) }
     var isLoadFile by remember { mutableStateOf(false) }
+    var codeError by remember { mutableStateOf(0) }
+    val context = LocalContext.current
+
 
 
     LaunchedEffect(isLoadFile){
 
-      if (isLoadFile) {navController.navigate("Home"); Log.d("MyLog","Циклит") }
+      if (isLoadFile) {
+          Log.d("MyLog","Ошибка :" + viewModel.startLoadingFile { }.await().message().toString())
+          viewModel.startLoadingFile { }.await().code()
+          delay(500)
+          navController.popBackStack()
+          navController.navigate("Home")
+      }
     }
-
-
 
 
     Box(
@@ -85,10 +99,12 @@ fun Login(navController: NavHostController, viewModel: MyViewModel) {
                     },
                     trailingIcon = {
                         hideClearIcon(!tokenText.isEmpty()) { tokenText = "" }
-                    }
+                    },
+                    isError = isErrorToken
 
 
                 )
+
                 Spacer(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -107,6 +123,7 @@ fun Login(navController: NavHostController, viewModel: MyViewModel) {
                     trailingIcon = {
                         hideClearIcon(!pathText.isEmpty()) { pathText = "" }
                     },
+                    isError = isErrorPath,
                     enabled = !tokenText.isEmpty()
                 )
 
@@ -118,7 +135,25 @@ fun Login(navController: NavHostController, viewModel: MyViewModel) {
 
 
                 ElevatedAssistChip(
-                    onClick = { viewModel.startLoadingFile(){isLoadFile=it} },
+                    colors = if (isLoadFile) {
+                        AssistChipDefaults.elevatedAssistChipColors(containerColor= Green)
+                    }
+                            else{AssistChipDefaults.elevatedAssistChipColors()},
+                    onClick = {
+                        isErrorToken=false
+                        isErrorPath=false
+                        viewModel.insertToken(tokenText)
+                        viewModel.startLoadingFile(){
+                            codeError=it
+                            when (codeError) {
+                                200 -> {isLoadFile=true}
+                                401 -> {isErrorToken=true ; Toast.makeText(context, "Неверный Token",Toast.LENGTH_SHORT ).show()}
+                                404 -> {isErrorPath=true;Toast.makeText(context, "Не найдет такой путь ",Toast.LENGTH_SHORT ).show()}
+                            }
+                            Log.d("MyLog",it.toString())
+                        }
+
+                              },
                     label = { Text("Войти") },
                     leadingIcon = {
 

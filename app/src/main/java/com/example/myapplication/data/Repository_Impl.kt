@@ -17,25 +17,19 @@ class Repository_Impl @Inject constructor(
     private val daoBD: DaoBD,
 ) : Repository {
 
-    override suspend fun startLoadingFile(isSuccessful: (Boolean) -> Unit): Response<YandexDiskUserInfo> {
-        val result = apiService.getUserInfo(
-            Constante.authToken, Constante.url_info
-        )
-        Log.d("MyLog","Функция start")
-        isSuccessful(result.isSuccessful)
-        if (result.isSuccessful) {
-            return result
-        } else {
-            throw (Exception("Ошибка, код ошибки ${result.code()}"))
+    override suspend fun startLoadingFile(token: String,code: (Int) -> Unit): Response<YandexDiskUserInfo> {
+        val result = apiService.getUserInfo(token, Constante.url_info)
+        code(result.code())
+        return result
         }
 
 
-    }
 
 
-    override suspend fun deleteData(item: Item): Response<YandexDiskUserInfo> {
+
+    override suspend fun deleteData(token: String,item: Item): Response<YandexDiskUserInfo> {
         return apiService.deleteFile(
-            Constante.authToken, Constante.url_delete + item.path
+            token, Constante.url_delete + item.path
         )
 
     }
