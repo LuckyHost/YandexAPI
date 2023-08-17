@@ -25,7 +25,7 @@ import timber.log.*
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun Login(navController: NavHostController, viewModel: MyViewModel) {
+fun Login(navController: NavHostController, mainViewModel: MainViewModel) {
 
     var tokenText by remember { mutableStateOf("") }
     var pathText by remember { mutableStateOf("") }
@@ -35,13 +35,14 @@ fun Login(navController: NavHostController, viewModel: MyViewModel) {
     var codeError by remember { mutableStateOf(0) }
     val context = LocalContext.current
 
+    Log.d("MyLog",tokenText.toString())
+    Log.d("MyLog",pathText)
+
 
 
     LaunchedEffect(isLoadFile){
 
       if (isLoadFile) {
-          Log.d("MyLog","Ошибка :" + viewModel.startLoadingFile { }.await().message().toString())
-          viewModel.startLoadingFile { }.await().code()
           delay(500)
           navController.popBackStack()
           navController.navigate("Home")
@@ -113,9 +114,10 @@ fun Login(navController: NavHostController, viewModel: MyViewModel) {
 
                 TextField(
                     modifier = Modifier.fillMaxWidth(),
+                    placeholder = {Text(text = "Работа\\Отчеты\\Потери\\Статистика" )} ,
                     value = pathText,
                     onValueChange = { pathText = it },
-                    label = { Text("Путь к папке на Ya.Disk") },
+                    label = { Text("Путь к папке на Yandex.Disk") },
                     singleLine = true,
                     leadingIcon = {
                         Icon(Icons.Outlined.Info, contentDescription = null)
@@ -140,17 +142,18 @@ fun Login(navController: NavHostController, viewModel: MyViewModel) {
                     }
                             else{AssistChipDefaults.elevatedAssistChipColors()},
                     onClick = {
+                        Log.d("MyLog","Click")
                         isErrorToken=false
                         isErrorPath=false
-                        viewModel.insertToken(tokenText)
-                        viewModel.startLoadingFile(){
+                        mainViewModel.insertTokenAndPath(tokenText,pathText)
+                        mainViewModel.startLoadingFile(){
                             codeError=it
                             when (codeError) {
                                 200 -> {isLoadFile=true}
                                 401 -> {isErrorToken=true ; Toast.makeText(context, "Неверный Token",Toast.LENGTH_SHORT ).show()}
-                                404 -> {isErrorPath=true;Toast.makeText(context, "Не найдет такой путь ",Toast.LENGTH_SHORT ).show()}
+                                404 -> {isErrorPath=true;Toast.makeText(context, "Не найдет такой путь на вашем Yandex.Disk",Toast.LENGTH_SHORT ).show()}
                             }
-                            Log.d("MyLog",it.toString())
+                            Log.d("MyLog"," Ошибка Retrofit $it")
                         }
 
                               },

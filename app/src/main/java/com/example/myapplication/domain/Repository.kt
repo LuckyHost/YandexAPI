@@ -7,7 +7,7 @@ import retrofit2.*
 
 interface Repository {
 
-    suspend fun startLoadingFile(token:String,code:(Int)->Unit): Response<YandexDiskUserInfo>
+    suspend fun startLoadingFile(token:String,path:String,code:(Int)->Unit): Response<YandexDiskUserInfo>
 
     suspend fun deleteData(token: String,item: Item): Response<YandexDiskUserInfo>
     suspend fun refreshLoadingFile(
@@ -15,5 +15,5 @@ interface Repository {
         startfun: Response<YandexDiskUserInfo>,
     )
 
-    suspend fun getDatainDB():Flow<List<PersonInfo>>
+    suspend fun creatDbRoom():Flow<List<PersonInfo>>
 }

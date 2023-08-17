@@ -17,12 +17,12 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.myapplication.domain.retrofit.DataClass.Item
-import com.example.myapplication.present.MyViewModel
+import com.example.myapplication.present.MainViewModel
 
 @SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun Home(myViewModel: MyViewModel) {
+fun Home(myViewModel: MainViewModel) {
 
     val state = rememberPullRefreshState( myViewModel.loadingFile.collectAsState().value, onRefresh = { myViewModel.refreshLoadingFile() })
     val rememberYaFile=myViewModel.fileYA.collectAsState().value?._embedded?.items

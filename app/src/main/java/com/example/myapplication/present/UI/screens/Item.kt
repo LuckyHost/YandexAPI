@@ -14,7 +14,7 @@ import com.example.myapplication.present.*
 //@Preview(showBackground = true)
 @Composable
 
-fun Item(item: Item, myViewModel: MyViewModel,) {
+fun Item(item: Item, myViewModel: MainViewModel,) {
 
     Card(
         modifier = Modifier

@@ -16,15 +16,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.myapplication.present.MyViewModel
+import com.example.myapplication.present.MainViewModel
 import com.example.myapplication.present.theme.Pink40
 import com.example.myapplication.present.theme.PurpleGrey40
 import kotlinx.coroutines.delay
-import timber.log.*
 
 //@Preview (showBackground = true)
 @Composable
- fun Splash(navController: NavController,myViewModel: MyViewModel) {
+ fun Splash(navController: NavController,myViewModel: MainViewModel) {
 
     myViewModel.startLoadingFile(){}
 

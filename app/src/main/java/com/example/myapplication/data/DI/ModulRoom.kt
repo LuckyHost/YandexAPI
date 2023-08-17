@@ -23,7 +23,7 @@ object ModulRoom {
         return  Room.databaseBuilder (
             context =  context.applicationContext,
             klass = MyDataBase::class.java,
-            name = "DB.bd"
+            name = "BD.bd"
         ).build()
     }
 
@@ -33,9 +33,4 @@ object ModulRoom {
         return myDataBase.getDao()
     }
 
-    @Singleton
-    @Provides
-    fun provideFlowListPerson(flow:Flow<List<PersonInfo>>):Flow<List<PersonInfo>>{
-        return flow
-    }
 }

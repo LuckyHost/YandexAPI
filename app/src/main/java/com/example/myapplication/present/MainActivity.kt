@@ -23,15 +23,12 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject lateinit var apiServiccce: ApiService
-
     @Inject lateinit var db: MyDataBase
-
     @Inject lateinit var dao: DaoBD
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val viewModel: MyViewModel by viewModels()
+        val viewModel: MainViewModel by viewModels()
 //        viewModel.startLoadingFile()
 
 

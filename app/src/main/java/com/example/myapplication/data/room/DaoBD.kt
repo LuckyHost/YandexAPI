@@ -6,11 +6,14 @@ import kotlinx.coroutines.flow.*
 
 @Dao
 interface DaoBD {
-    @Insert
-    suspend fun insertAll(users: PersonInfo)
-    @Query("DELETE  FROM MyTable")
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPersonInfo(users: PersonInfo)
+    @Query("DELETE  FROM PersonInfoTable")
     suspend fun deleteTable()
-    @Query("SELECT * FROM MyTable")
+    @Query("SELECT * FROM PersonInfoTable")
     suspend fun getAll(): List<PersonInfo>
+
+    @Query("SELECT * FROM PersonInfoTable WHERE id IN (:userId)")
+    suspend fun findPerson (userId: Int): PersonInfo
 
 }

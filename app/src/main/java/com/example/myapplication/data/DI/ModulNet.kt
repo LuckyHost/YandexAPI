@@ -19,7 +19,7 @@ object ModulNet {
     @Singleton
     @Provides
     fun provideReteofit(okHttpClient: OkHttpClient):Retrofit{
-         val BASE_URL = "https://cloud-api.yandex.net/v1/disk/"
+         val BASE_URL = "https://cloud-api.yandex.net/"
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(okHttpClient)
@@ -43,9 +43,6 @@ object ModulNet {
     fun provideAPIService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
     }
-
-
-
 
 
 }
